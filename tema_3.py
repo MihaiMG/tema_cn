@@ -259,15 +259,12 @@ def create_matrix(fisier):
 
 
 
+if __name__=="__main__":
+    matrice_a, vector_a = create_matrix("a.txt")
+    matrice_b, vector_b = create_matrix("b.txt")
 
-matrice_a,vector_a = create_matrix("a.txt")
-matrice_b,vector_b = create_matrix("b.txt")
+    numar_elemente = 0
+    timp_inceput = time.time()
 
-numar_elemente = 0
-timp_inceput = time.time()
-
-matrice_inmultita = inmulteste_matrici(matrice_a, matrice_b)
-
-# matrice_sortata = sorted(matrice_inmultita, key=lambda x: x[1])
-# print(len(matrice_inmultita))
-print("durata algoritmului :", timp_inceput-time.time())
+    matrice_adunata = aduna_matrici(matrice_a, matrice_b)
+    matrice_inmultita = inmulteste_matrici(matrice_a, matrice_b)
