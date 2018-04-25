@@ -1,0 +1,273 @@
+import time
+
+
+def inmulteste_vectori(lista1, lista2, vector_produs, numar_linie):
+
+    for element1 in lista1:
+        for element2 in lista2:
+            produs_elemente = 0
+            if element1[1] == element2[1]:
+                produs_elemente = element1[0]*element2[0]
+                element_adunat = False
+
+                for element3 in vector_produs:
+                    if element3[1] == element1[1]:
+                        produs_elemente += element3[0]
+
+                        index_to_replace = vector_produs.index(element3)
+                        vector_produs[index_to_replace] = (produs_elemente, element3[1], numar_linie)
+                        element_adunat = True
+                if element_adunat is False:
+                    vector_produs.append((produs_elemente, element1[1], numar_linie))
+    return vector_produs
+
+def aduna_liste_inmultire(numar_linie,lista1,lista2):
+
+    suma = 0
+    if len(lista2) > 0:
+        for index in range(len(lista1)):
+            element_produs = None
+
+            if len(lista2) > 0:
+                for aux_elem in lista2:
+                    if aux_elem[0] == lista1[index][1]:
+                        element_produs = aux_elem[1]
+                        break
+                if element_produs is not None:
+                    suma += suma + (element_produs[0] * lista1[index][0])
+    return (numar_linie,suma)
+
+
+def get_elements_by_col(matrice,coloana):
+
+    returned_list_by_column = []
+    for linie in matrice:
+        for element in linie:
+            if element[1] == coloana:
+                returned_list_by_column.append((linie.index(element), element))
+
+    return returned_list_by_column
+
+def inmulteste_matrici(matrice1,matrice2):
+
+    # matrice_inmultita = [list() for x in range(len(matrice1))]
+    matrice_inmultita = []
+    for line in range(len(matrice1)):
+        for coloana in range(len(matrice2)):
+            suma = 0
+            for element1 in matrice1[line]:
+                k = element1[1]
+                for element2 in matrice2[k]:
+                    if element2[1] == coloana:
+                        suma += element1[0]*element2[0]
+            print("linie : ",line," coloana : ", coloana)
+            if suma != 0:
+                matrice_inmultita.append((suma, line, coloana))
+
+
+    return matrice_inmultita
+def aduna(l1,l2):
+
+    diagonala = l1[-1][1]
+    diagonala_inferioara_1 = [l1[index] for index in range(len(l1)-1) if l1[index][1] < diagonala]
+    diagonala_inferioara_2 = [l2[index] for index in range(len(l2)-1) if l2[index][1] < diagonala]
+
+    diagonala_superioara_1 = [l1[index] for index in range(len(l1)-1) if l1[index][1] > diagonala]
+    diagonala_superioara_2 = [l2[index] for index in range(len(l2)-1) if l2[index][1] > diagonala]
+
+    if len(diagonala_inferioara_1) > len(diagonala_inferioara_2):
+        lista_inceput = diagonala_inferioara_1
+        second_list = diagonala_inferioara_2
+    else:
+        lista_inceput = diagonala_inferioara_2
+        second_list = diagonala_inferioara_1
+
+    if len(diagonala_superioara_1) > len(diagonala_superioara_2):
+        lista_inceput_superioara = diagonala_superioara_1
+        second_list_superioara = diagonala_superioara_2
+    else:
+        lista_inceput_superioara = diagonala_superioara_2
+        second_list_superioara = diagonala_superioara_1
+
+    lista_adunare_inferioara = []
+    elements_to_remove_inferioara = []
+    lista_adunare_superioara = []
+    elements_to_remove_superioara = []
+    for x in lista_inceput:
+        index = 0
+        suma = 0
+        for index in range(len(second_list)):
+            if x[1] == second_list[index][1]:
+                suma = x[0]+second_list[index][0]
+                lista_adunare_inferioara.append((suma, x[1]))
+                elements_to_remove_inferioara.append(second_list[index])
+        if suma == 0:
+            lista_adunare_inferioara.append(x)
+    for x in lista_inceput_superioara:
+        index = 0
+        suma = 0
+        for index in range(len(second_list_superioara)):
+            if x[1] == second_list_superioara[index][1]:
+                suma = x[0] + second_list_superioara[index][0]
+                lista_adunare_superioara.append((suma, x[1]))
+                lista_adunare_superioara.append(second_list_superioara[index])
+        if suma == 0:
+            lista_adunare_superioara.append(x)
+
+    second_list = [x for x in second_list if x not in elements_to_remove_inferioara]
+    second_list_superioara = [x for x in second_list if x not in elements_to_remove_superioara]
+
+    #adaugam la vectore elementele din a doua lista care nu au fost adunate - sau nu se gaseau in primul vector
+    lista_adunare_inferioara += second_list
+    lista_adunare_superioara += second_list_superioara
+
+    #sortam descrescator dupa valoare si adaugam elementele de pe diagonale
+
+    lista_adunare_inferioara.sort(key=lambda x: x[1], reverse=True)
+    lista_adunare_superioara.sort(key=lambda x: x[1], reverse=True)
+    lista_adunare_inferioara += lista_adunare_superioara
+    print(lista_adunare_inferioara)
+    lista_adunare_inferioara.append((l1[-1][0]+l2[-1][0],l1[-1][1]))
+
+    return lista_adunare_inferioara
+
+
+def aduna_matrici(matrice1,matrice2):
+    matrice_adunata = []
+    for x in range(len(matrice1)):
+        lista_adunata = aduna(matrice1[x],matrice2[x])
+        matrice_adunata.append(lista_adunata)
+    return matrice_adunata
+
+def aduna_vectori(l1,l2):
+
+    lista_adunata = []
+    for x in range(len(l1)):
+        lista_adunata.append(l1[x]+l2[x])
+    return lista_adunata
+
+def add_element(matrice,element,linie_curenta,coloana_curenta):
+    aux_elem = element
+    aux_linie = linie_curenta
+    aux_coloana = coloana_curenta
+
+    linie_din_matrice = matrice[linie_curenta]
+    index = matrice.index(linie_din_matrice)
+    #elementul este sub diagonalei
+    if coloana_curenta < linie_curenta:
+        pivot_stanga = 0
+        if linie_din_matrice[len(linie_din_matrice)-1][1] == linie_curenta:
+            linie_din_matrice.insert(pivot_stanga, (element, coloana_curenta))
+            return
+
+        if len(linie_din_matrice) == 1 and linie_din_matrice[len(linie_din_matrice)-1][1] == linie_curenta:
+            linie_din_matrice.insert(0, (element, coloana_curenta))
+            return
+        if len(linie_din_matrice) == 1 and linie_din_matrice[len(linie_din_matrice)-1][1] != linie_curenta:
+            if coloana_curenta < linie_din_matrice[pivot_stanga][1]:
+                linie_din_matrice.insert(1, (element, coloana_curenta))
+                return
+            else:
+                linie_din_matrice.insert(0, (element, coloana_curenta))
+                return
+
+        while coloana_curenta < linie_din_matrice[pivot_stanga][1]:
+
+            if linie_din_matrice[pivot_stanga][1] > linie_curenta:
+                pivot_stanga -= 1
+                linie_din_matrice.insert(pivot_stanga, (element, coloana_curenta))
+                return
+            pivot_stanga += 1
+            if pivot_stanga == len(linie_din_matrice):
+                linie_din_matrice.insert(pivot_stanga, (element, coloana_curenta))
+                return
+
+        linie_din_matrice.insert(pivot_stanga, (element, coloana_curenta))
+        return
+
+    #elementul este deasupra diagonalei
+    elif coloana_curenta > linie_curenta:
+
+        pivot_dreapta = 0
+        ajuns_diagonala = False
+        if linie_din_matrice[len(linie_din_matrice)-1][1] == linie_curenta:
+            pivot_dreapta = len(linie_din_matrice)-2
+        else:
+            pivot_dreapta = len(linie_din_matrice)-1
+
+        if pivot_dreapta < 0:
+            linie_din_matrice.insert(0, (element, coloana_curenta))
+            return
+
+        while coloana_curenta > linie_din_matrice[pivot_dreapta][1]:
+            # element_pivot = linie_din_matrice[pivot_dreapta][0]
+            # coloana_pivot = linie_din_matrice[pivot_dreapta][2]
+
+            if linie_din_matrice[pivot_dreapta][1] < linie_curenta:
+                pivot_dreapta += 1
+                linie_din_matrice.insert(pivot_dreapta, (element, coloana_curenta))
+                return
+            if pivot_dreapta < 0:
+                pivot_dreapta = 0
+                linie_din_matrice.insert(0, (element, coloana_curenta))
+                return
+
+            pivot_dreapta -= 1
+        linie_din_matrice.insert(pivot_dreapta+1, (element, coloana_curenta))
+        return
+
+    #elementul este pe diagonala, il adaugam la sfarsitul vectorului
+    else:
+        linie_din_matrice.append((element, coloana_curenta))
+        return
+
+
+def create_matrix(fisier):
+
+    with open(fisier, "r") as fisier:
+        numar_elemente = int(fisier.readline())
+        fisier.readline()
+        vector_b = []
+        matrice = [list() for x in range(2018)]
+
+        for index in range(numar_elemente):
+            numar_citit = float(fisier.readline())
+            vector_b.append(numar_citit)
+        fisier.readline()
+
+        while True:
+
+            linie_citita = (fisier.readline()).rstrip("\n")
+            if linie_citita == "":
+                break
+            linie_citita = linie_citita.split(",")
+            element = float(linie_citita[0])
+            index_linie = int(linie_citita[1])
+            index_coloana = int(linie_citita[2])
+
+            # try:
+            linie_curenta = matrice[index_linie]
+            if len(linie_curenta) > 0:
+                add_element(matrice, element, index_linie, index_coloana)
+            # except IndexError:
+            else:
+                linie_noua = list()
+                linie_noua.append((element, index_coloana))
+                matrice[index_linie] = linie_noua
+    return (matrice,vector_b)
+
+
+
+
+
+matrice_a,vector_a = create_matrix("a.txt")
+matrice_b,vector_b = create_matrix("b.txt")
+
+numar_elemente = 0
+timp_inceput = time.time()
+
+matrice_inmultita = inmulteste_matrici(matrice_a, matrice_b)
+
+# matrice_sortata = sorted(matrice_inmultita, key=lambda x: x[1])
+# print(len(matrice_inmultita))
+print("durata algoritmului :", timp_inceput-time.time())
