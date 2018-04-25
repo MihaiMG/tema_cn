@@ -21,7 +21,8 @@ def inmulteste_vectori(lista1, lista2, vector_produs, numar_linie):
                     vector_produs.append((produs_elemente, element1[1], numar_linie))
     return vector_produs
 
-def aduna_liste_inmultire(numar_linie,lista1,lista2):
+
+def aduna_liste_inmultire(numar_linie, lista1, lista2):
 
     suma = 0
     if len(lista2) > 0:
@@ -48,7 +49,8 @@ def get_elements_by_col(matrice,coloana):
 
     return returned_list_by_column
 
-def inmulteste_matrici(matrice1,matrice2):
+
+def inmulteste_matrici(matrice1, matrice2):
 
     # matrice_inmultita = [list() for x in range(len(matrice1))]
     matrice_inmultita = []
@@ -66,7 +68,32 @@ def inmulteste_matrici(matrice1,matrice2):
 
 
     return matrice_inmultita
-def aduna(l1,l2):
+
+def inmulteste_linie_vector(linie, vector):
+
+    element_returnat = 0
+
+    for index_linie in range(len(linie)):
+        element = linie[index_linie]
+        try:
+
+            element_returnat += element[0]*vector[element[1]]
+        except IndexError:
+            pass
+    return element_returnat
+
+
+def produs_matrice_vector(matrice1, vector):
+
+    vector_matrice_inmultit = []
+
+    for linie in matrice1:
+
+        produs_element = inmulteste_linie_vector(linie, vector)
+        vector_matrice_inmultit.append(produs_element)
+
+    return vector_matrice_inmultit
+def aduna(l1, l2):
 
     diagonala = l1[-1][1]
     diagonala_inferioara_1 = [l1[index] for index in range(len(l1)-1) if l1[index][1] < diagonala]
@@ -132,12 +159,31 @@ def aduna(l1,l2):
     return lista_adunare_inferioara
 
 
-def aduna_matrici(matrice1,matrice2):
-    matrice_adunata = []
+def inmulteste_vectori(vector_1, vector_2):
+
+    vector_returnat = []
+    for x in range(len(vector_1)):
+        vector_returnat.append(vector_1[x] * vector_2[x])
+    return vector_returnat
+
+
+def aduna_vectori(vector_1, vector_2):
+
+    vector_returnat = []
+    for x in range(len(vector_1)):
+
+        vector_returnat.append(vector_1[x]+vector_2[x])
+    return vector_returnat
+
+
+def aduna_matrici(matrice1, matrice2):
+
+    matrice_aduna = []
     for x in range(len(matrice1)):
-        lista_adunata = aduna(matrice1[x],matrice2[x])
-        matrice_adunata.append(lista_adunata)
-    return matrice_adunata
+        lista_adunata = aduna(matrice1[x], matrice2[x])
+        matrice_aduna.append(lista_adunata)
+    return matrice_aduna
+
 
 def aduna_vectori(l1,l2):
 
@@ -145,6 +191,7 @@ def aduna_vectori(l1,l2):
     for x in range(len(l1)):
         lista_adunata.append(l1[x]+l2[x])
     return lista_adunata
+
 
 def add_element(matrice,element,linie_curenta,coloana_curenta):
     aux_elem = element
@@ -263,8 +310,9 @@ if __name__=="__main__":
     matrice_a, vector_a = create_matrix("a.txt")
     matrice_b, vector_b = create_matrix("b.txt")
 
-    numar_elemente = 0
-    timp_inceput = time.time()
-
-    matrice_adunata = aduna_matrici(matrice_a, matrice_b)
-    matrice_inmultita = inmulteste_matrici(matrice_a, matrice_b)
+    vector_inmultit = produs_matrice_vector(matrice_a, vector_a)
+    # vector_c = inmulteste_vectori(vector_a, vector_b)
+    # vector_d = aduna_vectori(vector_a, vector_b)
+    pics =1
+    # matrice_adunata = aduna_matrici(matrice_a, matrice_b)
+    # matrice_inmultita = inmulteste_matrici(matrice_a, matrice_b)
