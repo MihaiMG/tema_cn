@@ -1,5 +1,8 @@
 import time
 import pickle
+import sys
+
+_EPSILON = sys.float_info.epsilon
 
 def inmulteste_vectori(lista1, lista2, vector_produs, numar_linie):
 
@@ -94,6 +97,7 @@ def produs_matrice_vector(matrice1, vector):
 
     return vector_matrice_inmultit
 
+
 def aduna(l1, l2):
 
     diagonala = l1[-1][1]
@@ -154,7 +158,7 @@ def aduna(l1, l2):
     lista_adunare_inferioara.sort(key=lambda x: x[1], reverse=True)
     lista_adunare_superioara.sort(key=lambda x: x[1], reverse=True)
     lista_adunare_inferioara += lista_adunare_superioara
-    print(lista_adunare_inferioara)
+    #print(lista_adunare_inferioara)
     lista_adunare_inferioara.append((l1[-1][0]+l2[-1][0],l1[-1][1]))
 
     return lista_adunare_inferioara
@@ -300,7 +304,7 @@ def create_matrix(fisier, serialize_matrix, serialize_vector):
                 linie_noua = list()
                 linie_noua.append((element, index_coloana))
                 matrice[index_linie] = linie_noua
-            print(index_linie)
+            #print(index_linie)
 
     if serialize_matrix is True:
         output_matrix = open("matrice.pkl", "wb")
@@ -311,14 +315,42 @@ def create_matrix(fisier, serialize_matrix, serialize_vector):
         pickle.dump(vector_b, output_vector, -1)
     return (matrice,vector_b)
 
+def cauta_element(valoare,matrice):
+    
+    for linie in matrice:
+        for element in linie:
+            if abs(element[0]-valoare) < _EPSILON:
+                return True
+    return False
 
+def verifica_adunare(matrice_a,matrce_b,fisier):
+    #factor_aprox = epsilon
+    matrice,vector = create_matrix(fisier,False,False)
+    matrice_adunata = aduna_matrici(matrice_a,matrice_b)
+
+
+    numar_failuri  = 0
+    numar_ok = 0
+    for linie in matrice_adunata:
+        for element in linie:
+            gasit=cauta_element(element[0],matrice)
+            if gasit is False:
+                #print("Nu am gasit elementul {0} linia {1} /n".format(element[0],matrice_adunata.index(linie)))
+                numar_failuri += 1
+            else:
+                numar_ok += 1
+    numar_total = numar_failuri + numar_ok
+    print("Numar failuri : {0}, numar failuri {1}".format(numar_failuri,numar_ok))
+    print("Acuratete succes {0}".format((float(100 * numar_ok/numar_total))))
 
 
 if __name__=="__main__":
 
 
-    #this is a maine thing
     matrice_a, vector_a = create_matrix("a.txt", True, True)
+    matrice_b, vector_b = create_matrix("b.txt", True, True)
+    matrice_adunata = aduna_matrici(matrice_a,matrice_b)
+    verifica_adunare(matrice_a,matrice_b,"aplusb.txt")
     # matrice_b, vector_b = create_matrix("b.txt")
 
     # vector_inmultit = produs_matrice_vector(matrice_a, vector_a)
