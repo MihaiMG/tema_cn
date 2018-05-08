@@ -346,7 +346,7 @@ def verifica_adunare(matrice_a,matrce_b,fisier):
 
 if __name__=="__main__":
 
-
+     
     matrice_a, vector_a = create_matrix("a.txt", True, True)
     matrice_b, vector_b = create_matrix("b.txt", True, True)
     matrice_adunata = aduna_matrici(matrice_a,matrice_b)
