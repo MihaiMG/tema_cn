@@ -317,7 +317,7 @@ def create_matrix(fisier, serialize_matrix, serialize_vector):
 if __name__=="__main__":
 
 
-    print("whatever")
+    #this is a maine thing
     matrice_a, vector_a = create_matrix("a.txt", True, True)
     # matrice_b, vector_b = create_matrix("b.txt")
 
