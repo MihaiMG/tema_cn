@@ -93,6 +93,7 @@ def produs_matrice_vector(matrice1, vector):
         vector_matrice_inmultit.append(produs_element)
 
     return vector_matrice_inmultit
+
 def aduna(l1, l2):
 
     diagonala = l1[-1][1]
@@ -247,8 +248,6 @@ def add_element(matrice,element,linie_curenta,coloana_curenta):
             return
 
         while coloana_curenta > linie_din_matrice[pivot_dreapta][1]:
-            # element_pivot = linie_din_matrice[pivot_dreapta][0]
-            # coloana_pivot = linie_din_matrice[pivot_dreapta][2]
 
             if linie_din_matrice[pivot_dreapta][1] < linie_curenta:
                 pivot_dreapta += 1
@@ -316,8 +315,9 @@ def create_matrix(fisier, serialize_matrix, serialize_vector):
 
 
 if __name__=="__main__":
-    print(" ")
 
+
+    print("whatever")
     matrice_a, vector_a = create_matrix("a.txt", True, True)
     # matrice_b, vector_b = create_matrix("b.txt")
 
