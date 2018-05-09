@@ -57,7 +57,7 @@ if __name__ == "__main__":
                 break
             suma_1 = calculate_sum(i, xc, matrice[i])
             suma_2 = 0
-            # suma_2 = calculate_sum_2(i, xp, matrice[i])
+            suma_2 = calculate_sum_2(i, xp, matrice[i])
             xp[i] = (suma_1+suma_2)/matrice[-1][-1][0]
             diferenta = [xc[i] - xp[i] for xi in range(len(xc))]
             print(i)

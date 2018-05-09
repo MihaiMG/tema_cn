@@ -323,25 +323,49 @@ def cauta_element(valoare,matrice):
                 return True
     return False
 
-def verifica_adunare(matrice_a,matrce_b,fisier):
+def verifica_calcul(matrice_a,matrce_b,fisier,adunare):
     #factor_aprox = epsilon
     matrice,vector = create_matrix(fisier,False,False)
-    matrice_adunata = aduna_matrici(matrice_a,matrice_b)
+    
+    if adunare is True:
+        matrice_adunata = aduna_matrici(matrice_a,matrice_b)
+        numar_failuri  = 0
+        numar_ok = 0
+        for linie in matrice_adunata:
+            for element in linie:
+                gasit=cauta_element(element[0],matrice)
+                if gasit is False:
+                    #print("Nu am gasit elementul {0} linia {1} /n".format(element[0],matrice_adunata.index(linie)))
+                    numar_failuri += 1
+                else:
+                    numar_ok += 1
+        numar_total = numar_failuri + numar_ok
+        print("Numar failuri : {0}, numar failuri {1}".format(numar_failuri,numar_ok))
+        print("Acuratete succes {0}".format((float(100 * numar_ok/numar_total))))
+    else:
+        #matrice_adunata = inmulteste_matrici(matrice_a,matrice_b)
+        try:
+            pickled_file = open("aorib.pkl","rb")
+            matrice_adunata = pickle.load(pickled_file)
+        except e:
+            print("File was not pickled")
+            exit()
 
 
-    numar_failuri  = 0
-    numar_ok = 0
-    for linie in matrice_adunata:
-        for element in linie:
-            gasit=cauta_element(element[0],matrice)
-            if gasit is False:
-                #print("Nu am gasit elementul {0} linia {1} /n".format(element[0],matrice_adunata.index(linie)))
-                numar_failuri += 1
-            else:
-                numar_ok += 1
-    numar_total = numar_failuri + numar_ok
-    print("Numar failuri : {0}, numar failuri {1}".format(numar_failuri,numar_ok))
-    print("Acuratete succes {0}".format((float(100 * numar_ok/numar_total))))
+        numar_failuri  = 0
+        numar_ok = 0
+        for linie in matrice_adunata:
+            for element in linie:
+                gasit=cauta_element(element,matrice)
+                if gasit is False:
+                    #print("Nu am gasit elementul {0} linia {1}".format(element,matrice_adunata.index(linie)))
+                    numar_failuri += 1
+                    
+                else:
+                    numar_ok += 1
+        numar_total = numar_failuri + numar_ok
+        print("Numar failuri : {0}, numar failuri {1}".format(numar_failuri,numar_ok))
+        print("Acuratete succes {0}".format((float(100 * numar_ok/numar_total))))
 
 
 if __name__=="__main__":
@@ -349,8 +373,12 @@ if __name__=="__main__":
      
     matrice_a, vector_a = create_matrix("a.txt", True, True)
     matrice_b, vector_b = create_matrix("b.txt", True, True)
-    matrice_adunata = aduna_matrici(matrice_a,matrice_b)
-    verifica_adunare(matrice_a,matrice_b,"aplusb.txt")
+    #matrice_adunata = aduna_matrici(matrice_a,matrice_b)
+    #matrice_inmultita = inmulteste_matrici(matrice_a,matrice_b)
+    #output_matrice = open("aorib.pkl","wb")
+    #pickle.dump(matrice_inmultita,output_matrice,-1)
+    #verifica_calcul(matrice_a,matrice_b,"aplusb.txt",True)
+    verifica_calcul(matrice_a,matrice_b,"aorib.txt",False)
     # matrice_b, vector_b = create_matrix("b.txt")
 
     # vector_inmultit = produs_matrice_vector(matrice_a, vector_a)
