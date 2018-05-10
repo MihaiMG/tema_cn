@@ -2,7 +2,7 @@ import time
 import pickle
 import sys
 
-_EPSILON = sys.float_info.epsilon
+_EPSILON = pow(10,-1)
 
 def inmulteste_vectori(lista1, lista2, vector_produs, numar_linie):
 
@@ -65,7 +65,7 @@ def inmulteste_matrici(matrice1, matrice2):
                 for element2 in matrice2[k]:
                     if element2[1] == coloana:
                         suma += element1[0]*element2[0]
-            print("linie : ",line," coloana : ", coloana)
+            #print("linie : ",line)
             if suma != 0:
                 matrice_inmultita.append((suma, line, coloana))
 
@@ -78,11 +78,7 @@ def inmulteste_linie_vector(linie, vector):
 
     for index_linie in range(len(linie)):
         element = linie[index_linie]
-        try:
-
-            element_returnat += element[0]*vector[element[1]]
-        except IndexError:
-            pass
+        element_returnat += element[0]*vector[element[1]]
     return element_returnat
 
 
@@ -323,6 +319,30 @@ def cauta_element(valoare,matrice):
                 return True
     return False
 
+def verifica_element_vector(element,rezultat_a):
+
+    for element_2 in rezultat_a:
+        if abs(element_2-element) < _EPSILON:
+            return True
+
+    return False
+
+def verifica_vectori_inmultiti(rezultat_produs,vector_a):
+
+    numar_failuri = 0
+    numar_ok = 0
+    for element in rezultat_produs:
+        gasit = False
+        gasit = verifica_element_vector(element,vector_a)
+        if gasit is True:
+            numar_ok +=1
+        else:
+            numar_failuri += 1
+            print("Nu am gasit elementul {0}".format(element))
+    numar_total = numar_ok+numar_failuri
+    print("Numar failuri : {0}, numar succes {1}".format(numar_failuri,numar_ok))
+    print("Acuratete succes (vector) {0}".format((float(100 * numar_ok/numar_total))))
+
 def verifica_calcul(matrice_a,matrce_b,fisier,adunare):
     #factor_aprox = epsilon
     matrice,vector = create_matrix(fisier,False,False)
@@ -364,7 +384,7 @@ def verifica_calcul(matrice_a,matrce_b,fisier,adunare):
                 else:
                     numar_ok += 1
         numar_total = numar_failuri + numar_ok
-        print("Numar failuri : {0}, numar failuri {1}".format(numar_failuri,numar_ok))
+        print("Numar failuri : {0}, numar succes {1}".format(numar_failuri,numar_ok))
         print("Acuratete succes {0}".format((float(100 * numar_ok/numar_total))))
 
 
@@ -372,13 +392,26 @@ if __name__=="__main__":
 
      
     matrice_a, vector_a = create_matrix("a.txt", True, True)
-    matrice_b, vector_b = create_matrix("b.txt", True, True)
+    #matrice_b, vector_b = create_matrix("b.txt", True, True)
     #matrice_adunata = aduna_matrici(matrice_a,matrice_b)
+    
+    vector_inmultire = [i for i in range(0,2018)]
+    rezultat_produs = produs_matrice_vector(matrice_a,vector_inmultire)
+    vector_1_sort = sorted(rezultat_produs,key= lambda x : x)
+    vector_2_sort = sorted(vector_a,key= lambda x : x)
+    for i in range(len(rezultat_produs)):
+        print("Vector 1 {0}      -     Vector 2 {1}".format(vector_1_sort[i],vector_2_sort[i]))
+    #print(rezultat_produs)
+    #verifica_vectori_inmultiti(rezultat_produs,vector_a)
+    #fisier_inmultire = open("aorib.pkl","r")
+
+    #matrice_i = pickle.load(fisier_inmultire)
+    #print(matrice_i)
     #matrice_inmultita = inmulteste_matrici(matrice_a,matrice_b)
     #output_matrice = open("aorib.pkl","wb")
     #pickle.dump(matrice_inmultita,output_matrice,-1)
     #verifica_calcul(matrice_a,matrice_b,"aplusb.txt",True)
-    verifica_calcul(matrice_a,matrice_b,"aorib.txt",False)
+    #verifica_calcul(matrice_a,matrice_b,"aorib.txt",False)
     # matrice_b, vector_b = create_matrix("b.txt")
 
     # vector_inmultit = produs_matrice_vector(matrice_a, vector_a)
