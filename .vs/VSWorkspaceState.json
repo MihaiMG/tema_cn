@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\__pycache__"
   ],
-  "SelectedNode": "\\a.txt",
+  "SelectedNode": "\\tema_5.py",
   "PreviewInSolutionExplorer": false
 }
