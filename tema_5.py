@@ -19,7 +19,7 @@ def li_2(numar_linii_coloane,genereaza,matrix):
     if genereaza is True:
         matrice = create_example_matrix(numar_linii_coloane)
     else:
-        matrice_np = cp.deepcopy(matrix)
+        matrice_np = cp.copy(matrix)
 
     #Am aflat V0 cu formula initiala
     #matrice_np = np.matrix(matrice)
@@ -33,33 +33,38 @@ def li_2(numar_linii_coloane,genereaza,matrix):
     except:
         print("Division by 0")
         return
-    matrice_v0 = transpusa*produs
-    matrice_v1 = cp.copy(matrice_v0)
-    k =0 
-    kmax = 10000
 
-    norma_v0_v1 = _EPSILON+1
-    limita_putere = pow(10,10)
+    matrice_v = transpusa*produs
+    matrice_v1 = cp.copy(matrice_v)
+    k =0 
+    kmax = 1000
+
+    limita_putere =pow(10,10)
+
+    matrice_b = -1 * matrice_v
 
     for k in range(kmax):
 
         matrice_v0 = cp.copy(matrice_v1)
+
+        matrice_v0 = cp.copy(matrice_v1)
+        matrice_c_1 = np.matmul(matrice_v0,matrice_b)
+        for i in range(numar_linii_coloane-1):
+            matrice_c_1[i,i] += 0
+        matrice_c_1 *= 0.25
+
+        matrice_c_2 = np.matmul(matrice_v0,matrice_b)
+        for i in range(numar_linii_coloane-1):
+            matrice_c_2[i,i] += 3
+        matrice_c_patrat = np.linalg.matrix_power(matrice_c_2,2)
+        matrice_f = np.matmul(matrice_c_1,matrice_c_patrat)
         determinant = np.linalg.det(matrice_np)
-        determinant3 = 3*determinant
-        a_v0_3 = np.multiply(matrice_np,matrice_v0)
-        #a_v0_3 *= -1
-        #a_v0_3 += determinant3
-        a_v0_3 -= (3*determinant)
-        a_v0_patrat = np.multiply(a_v0_3,a_v0_3)
+        matrice_f += determinant
 
-        a_v0_1 = np.multiply(matrice_v0,matrice_np)
-        a_v0_1 -= determinant
-        a_v0 = np.multiply(a_v0_1,a_v0_3)
-        a_v0 *= 0.25
-        a_v0 += determinant
-        matrice_v1 = np.multiply(a_v0,matrice_v0)
+        matrice_finala = np.matmul(matrice_f,matrice_v0)
+        matrice_v1 = matrice_finala
 
-        diferenta_v0_v1 = np.subtract(matrice_v0,a_v0)
+        diferenta_v0_v1 = np.subtract(matrice_v1,matrice_v0)
         norma_v0_v1 = np.linalg.norm(diferenta_v0_v1)
 
 
@@ -80,7 +85,10 @@ def li_2(numar_linii_coloane,genereaza,matrix):
     else:
         print("Numarul de iteratii : {0}".format(k))
         print("Maatricea este divergenta")
-     
+        print("Matrice initiala :")
+        print(matrice_np)
+        print("Matrice inversa : ")
+        print(matrice_v1)
 
 
 def li_1(numar_linii_coloane,genereaza,matrix):
@@ -88,7 +96,7 @@ def li_1(numar_linii_coloane,genereaza,matrix):
     if genereaza is True:
         matrice = create_example_matrix(numar_linii_coloane)
     else:
-        matrice_np = cp.deepcopy(matrix)
+        matrice_np = cp.copy(matrix)
 
     #Am aflat V0 cu formula initiala
     #matrice_np = np.matrix(matrice)
@@ -103,26 +111,34 @@ def li_1(numar_linii_coloane,genereaza,matrix):
         print("Division by 0")
         return
 
-    matrice_v0 = transpusa * produs
-    matrice_v1 = cp.copy(matrice_v0)
+    matrice_v = transpusa*produs
+    matrice_v1 = cp.copy(matrice_v)
     k =0 
-    kmax = 10000
+    kmax = 1000
 
-    norma_v0_v1 = _EPSILON+1
-    limita_putere = pow(10,10)
+    limita_putere =pow(10,10)
+
+    matrice_b = -1 * matrice_v
+
     for k in range(kmax):
 
-        matrice_v0 = cp.copy(matrice_v1)
+        #matrice_v0 = cp.copy(matrice_v1)
         
-        matrice_a_v = np.multiply(matrice_np,matrice_v0)
-        determinant = np.linalg.det(matrice_np)
-        matrice_a_v -= (3*determinant)
-        matrice_a_v = np.multiply(matrice_v0,matrice_a_v)
-        matrice_a_v = np.multiply(matrice_np,matrice_a_v)
-        matrice_a_v -= (3*determinant)
-        matrice_v1  = np.multiply(matrice_v0,matrice_a_v)
+        #calculam #3In - AVk0
+        matrice_v0 = cp.copy(matrice_v1)
+        matrice_c_1 = np.matmul(matrice_b,matrice_v0)
+        for i in range(numar_linii_coloane-1):
+            matrice_c_1[i,i] += 3
+        matrice_v_k = np.matmul(matrice_v0,matrice_c_1)
+        matrice_c_2  = np.matmul(matrice_b,matrice_v_k)
 
-        diferenta_v0_v1 = np.subtract(matrice_v0,matrice_v1)
+        #matrice_d = np.matmul(matrice_b,matrice_v0_0)
+        for i in range(numar_linii_coloane-1):
+            matrice_c_2[i,i] += 3
+
+        matrice_v1  = np.matmul(matrice_v0,matrice_c_2)
+
+        diferenta_v0_v1 = np.subtract(matrice_v1,matrice_v0)
         norma_v0_v1 = np.linalg.norm(diferenta_v0_v1)
         if norma_v0_v1 < _EPSILON or norma_v0_v1 > limita_putere:
             break
@@ -141,6 +157,10 @@ def li_1(numar_linii_coloane,genereaza,matrix):
     else:
         print("Numarul de iteratii : {0}".format(k))
         print("Maatricea este divergenta")
+        print("Matrice initiala :")
+        print(matrice_np)
+        print("Matrice inversa : ")
+        print(matrice_v1)
     
 
 def schultz(numar_linii_coloane,genereaza,matrix):
@@ -152,7 +172,7 @@ def schultz(numar_linii_coloane,genereaza,matrix):
 
 
     #Am aflat V0 cu formula initiala
-    #matrice_np = np.matrix(matrice)
+    #matrice_np = np.ndarray(shape=(numar_linii_coloane,numar_linii_coloane), dtype=float)
     transpusa = np.transpose(matrice_np)
 
     #Calculam normele
@@ -164,23 +184,31 @@ def schultz(numar_linii_coloane,genereaza,matrix):
         print("Division by 0")
         return
 
-    matrice_v0 = transpusa*produs
-    matrice_v1 = cp.copy(matrice_v0)
+    matrice_v = transpusa*produs
+    matrice_v1 = cp.copy(matrice_v)
     k =0 
     kmax = 1000
 
     limita_putere =pow(10,10)
+
+    matrice_b = -1 * matrice_v
+    
+    #matrice_c = np.matmul(matrice_b,matrice_v0)
+    #for i in range(numar_linii_coloane-1):
+    #    matrice_c[i,i] += 2
+
     for k in range(kmax):
 
         matrice_v0 = cp.copy(matrice_v1)
+        matrice_c = np.matmul(matrice_b,matrice_v0)
+        for i in range(numar_linii_coloane-1):
+            matrice_c[i,i] += 2
+        matrice_v1  = np.matmul(matrice_v0,matrice_c)
 
-        matrice_a = np.matmul(matrice_np,matrice_v0)
-        matrice_a += -(2*np.linalg.det(matrice_np))
-        matrice_v1  = np.matmul(matrice_v0,matrice_a)
 
-
-        diferenta_v0_v1 = np.subtract(matrice_v0,matrice_v1)
+        diferenta_v0_v1 = np.subtract(matrice_v1,matrice_v0)
         norma_v0_v1 = np.linalg.norm(diferenta_v0_v1)
+
         if norma_v0_v1 < _EPSILON or norma_v0_v1 > limita_putere:
             break
         
@@ -231,10 +259,10 @@ if __name__ == "__main__":
         #matrice.append(lista)
     #matrice2 = np.matrix(matrice)
 
-    forma = 4
+    forma = 3
     matrice = create_example_matrix(forma)
-    matrice2 = np.ndarray(shape=(forma,forma), dtype=float)
-
-    schultz(10,False,matrice2)
-    #li_2(10,False,matrice2)
-    #li_1(10,False,matrice2)
+    matrice2 = np.asarray(matrice, dtype=float)
+    print(matrice2)
+    #schultz(3,False,matrice2)
+    li_2(3,False,matrice2)
+    #li_1(3,False,matrice2)
