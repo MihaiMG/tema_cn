@@ -65,20 +65,19 @@ def inmulteste_matrici(matrice1, matrice2):
                 for element2 in matrice2[k]:
                     if element2[1] == coloana:
                         suma += element1[0]*element2[0]
-            #print("linie : ",line)
             if suma != 0:
                 matrice_inmultita.append((suma, line, coloana))
 
 
     return matrice_inmultita
 
-def inmulteste_linie_vector(linie, vector):
+def inmulteste_linie_vector(linie, element1):
 
     element_returnat = 0
 
     for index_linie in range(len(linie)):
         element = linie[index_linie]
-        element_returnat += element[0]*vector[element[1]]
+        element_returnat += element[0]*element1
     return element_returnat
 
 
@@ -87,9 +86,14 @@ def produs_matrice_vector(matrice1, vector):
     vector_matrice_inmultit = []
 
     for linie in matrice1:
-
-        produs_element = inmulteste_linie_vector(linie, vector)
-        vector_matrice_inmultit.append(produs_element)
+        suma = 0
+        index = matrice1.index(linie)
+        #factor = vector[index]
+        #print(" linie        :     {0}".format(matrice1.index(linie)))
+        for element in linie:      
+            suma += element[0]*vector[element[1]]
+            #print("suma : {0} element_m : {1}   element_v : {2}  inmultite : {3}".format(suma,element[0],vector[index],element[0]*vector[index]))
+        vector_matrice_inmultit.append(suma)
 
     return vector_matrice_inmultit
 
@@ -268,9 +272,9 @@ def add_element(matrice,element,linie_curenta,coloana_curenta):
         return
 
 
-def create_matrix(fisier, serialize_matrix, serialize_vector):
+def create_matrix(fisier_n, serialize_matrix, serialize_vector):
 
-    with open(fisier, "r") as fisier:
+    with open(fisier_n, "r") as fisier:
         numar_elemente = int(fisier.readline())
         fisier.readline()
         vector_b = []
@@ -303,11 +307,13 @@ def create_matrix(fisier, serialize_matrix, serialize_vector):
             #print(index_linie)
 
     if serialize_matrix is True:
-        output_matrix = open("matrice.pkl", "wb")
+        nume_fisier_matrice = fisier_n.split(".")[0]+".pkl"
+        output_matrix = open(nume_fisier_matrice, "wb")
         pickle.dump(matrice, output_matrix, -1)
 
     if serialize_vector is True:
-        output_vector = open("vector.pkl", "wb")
+        nume_fisier_vector = fisier_n.split(".")[0]+"_vector_.pkl"
+        output_vector = open(nume_fisier_vector, "wb")
         pickle.dump(vector_b, output_vector, -1)
     return (matrice,vector_b)
 
@@ -360,10 +366,10 @@ def verifica_calcul(matrice_a,matrce_b,fisier,adunare):
                 else:
                     numar_ok += 1
         numar_total = numar_failuri + numar_ok
-        print("Numar failuri : {0}, numar failuri {1}".format(numar_failuri,numar_ok))
+        print("Numar failuri : {0}, numar succes {1}".format(numar_failuri,numar_ok))
         print("Acuratete succes {0}".format((float(100 * numar_ok/numar_total))))
     else:
-        #matrice_adunata = inmulteste_matrici(matrice_a,matrice_b)
+        matrice_adunata = inmulteste_matrici(matrice_a,matrice_b)
         try:
             pickled_file = open("aorib.pkl","rb")
             matrice_adunata = pickle.load(pickled_file)
@@ -374,11 +380,10 @@ def verifica_calcul(matrice_a,matrce_b,fisier,adunare):
 
         numar_failuri  = 0
         numar_ok = 0
-        for linie in matrice_adunata:
-            for element in linie:
-                gasit=cauta_element(element,matrice)
+        for element in matrice_adunata:
+                gasit=cauta_element(element[0],matrice)
                 if gasit is False:
-                    #print("Nu am gasit elementul {0} linia {1}".format(element,matrice_adunata.index(linie)))
+                    print("Nu am gasit elementul {0} linia {1}".format(element,matrice_adunata.index(linie)))
                     numar_failuri += 1
                     
                 else:
@@ -392,17 +397,19 @@ if __name__=="__main__":
 
      
     matrice_a, vector_a = create_matrix("a.txt", True, True)
-    #matrice_b, vector_b = create_matrix("b.txt", True, True)
+    matrice_b, vector_b = create_matrix("b.txt", True, True)
     #matrice_adunata = aduna_matrici(matrice_a,matrice_b)
-    
-    vector_inmultire = [i for i in range(0,2018)]
+    #(10.3333333333333*1)+(12.6666666666667*1)+(11.6666666666667*1)+(6.0*1)+(13.333333333333*2017)+(154.5*1)
+    vector_inmultire = [2018-i for i in range(0,2018)]
+    #print(vector_inmultire)
     rezultat_produs = produs_matrice_vector(matrice_a,vector_inmultire)
-    vector_1_sort = sorted(rezultat_produs,key= lambda x : x)
-    vector_2_sort = sorted(vector_a,key= lambda x : x)
-    for i in range(len(rezultat_produs)):
-        print("Vector 1 {0}      -     Vector 2 {1}".format(vector_1_sort[i],vector_2_sort[i]))
+    #vector_1_sort = sorted(rezultat_produs,key= lambda x : x)
+    #vector_2_sort = sorted(vector_a,key= lambda x : x)
+    #vector_3_sort = sorted(vector_a,key= lambda x : x)
+    #for i in range(len(rezultat_produs)):
+        #print("Vector 1 {0}      -     Vector 2 {1}   element din vector {2}".format(vector_1_sort[i],vector_2_sort[i],vector_a.index(vector_2_sort[i])))
     #print(rezultat_produs)
-    #verifica_vectori_inmultiti(rezultat_produs,vector_a)
+    verifica_vectori_inmultiti(rezultat_produs,vector_a)
     #fisier_inmultire = open("aorib.pkl","r")
 
     #matrice_i = pickle.load(fisier_inmultire)
@@ -410,8 +417,8 @@ if __name__=="__main__":
     #matrice_inmultita = inmulteste_matrici(matrice_a,matrice_b)
     #output_matrice = open("aorib.pkl","wb")
     #pickle.dump(matrice_inmultita,output_matrice,-1)
-    #verifica_calcul(matrice_a,matrice_b,"aplusb.txt",True)
-    #verifica_calcul(matrice_a,matrice_b,"aorib.txt",False)
+    verifica_calcul(matrice_a,matrice_b,"aplusb.txt",True)
+    verifica_calcul(matrice_a,matrice_b,"aorib.txt",False)
     # matrice_b, vector_b = create_matrix("b.txt")
 
     # vector_inmultit = produs_matrice_vector(matrice_a, vector_a)

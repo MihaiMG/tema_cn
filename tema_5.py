@@ -19,11 +19,11 @@ def li_2(numar_linii_coloane,genereaza,matrix):
     if genereaza is True:
         matrice = create_example_matrix(numar_linii_coloane)
     else:
-        matrice = matrix
+        matrice_np = cp.deepcopy(matrix)
 
     #Am aflat V0 cu formula initiala
-    matrice_np = np.matrix(matrice)
-    transpusa = matrice_np.transpose()
+    #matrice_np = np.matrix(matrice)
+    transpusa = np.transpose(matrice_np)
 
     #Calculam normele
     try:
@@ -47,8 +47,9 @@ def li_2(numar_linii_coloane,genereaza,matrix):
         determinant = np.linalg.det(matrice_np)
         determinant3 = 3*determinant
         a_v0_3 = np.multiply(matrice_np,matrice_v0)
-        a_v0_3 *= -1
-        a_v0_3 += determinant3
+        #a_v0_3 *= -1
+        #a_v0_3 += determinant3
+        a_v0_3 -= (3*determinant)
         a_v0_patrat = np.multiply(a_v0_3,a_v0_3)
 
         a_v0_1 = np.multiply(matrice_v0,matrice_np)
@@ -70,8 +71,12 @@ def li_2(numar_linii_coloane,genereaza,matrix):
         matrice_inm = np.multiply(matrice_np,matrice_v1)
         det = np.linalg.det(matrice_np)
         matrice_inm -= det
-        norma = np.linalg.norm(matrice_np,ord=1)
-        print("Norma : "+str(norma))
+        norma = np.linalg.norm(matrice_inm,ord=1)
+        print("Norma: "+str(norma))
+        print("Matrice initiala :")
+        print(matrice_np)
+        print("Matrice inversa : ")
+        print(matrice_v1)
     else:
         print("Numarul de iteratii : {0}".format(k))
         print("Maatricea este divergenta")
@@ -83,11 +88,11 @@ def li_1(numar_linii_coloane,genereaza,matrix):
     if genereaza is True:
         matrice = create_example_matrix(numar_linii_coloane)
     else:
-        matrice = matrix
+        matrice_np = cp.deepcopy(matrix)
 
     #Am aflat V0 cu formula initiala
-    matrice_np = np.matrix(matrice)
-    transpusa = matrice_np.transpose()
+    #matrice_np = np.matrix(matrice)
+    transpusa = np.transpose(matrice_np)
 
     #Calculam normele
     try:
@@ -97,7 +102,8 @@ def li_1(numar_linii_coloane,genereaza,matrix):
     except:
         print("Division by 0")
         return
-    matrice_v0 = transpusa*produs
+
+    matrice_v0 = transpusa * produs
     matrice_v1 = cp.copy(matrice_v0)
     k =0 
     kmax = 10000
@@ -126,8 +132,12 @@ def li_1(numar_linii_coloane,genereaza,matrix):
         matrice_inm = np.multiply(matrice_np,matrice_v1)
         det = np.linalg.det(matrice_np)
         matrice_inm -= det
-        norma = np.linalg.norm(matrice_np,ord=1)
-        print("Norma :"+str(norma))
+        norma = np.linalg.norm(matrice_inm,ord=1)
+        print("Norma: "+str(norma))
+        print("Matrice initiala :")
+        print(matrice_np)
+        print("Matrice inversa : ")
+        print(matrice_v1)
     else:
         print("Numarul de iteratii : {0}".format(k))
         print("Maatricea este divergenta")
@@ -138,11 +148,12 @@ def schultz(numar_linii_coloane,genereaza,matrix):
     if genereaza is True:
         matrice = create_example_matrix(numar_linii_coloane)
     else:
-        matrice = matrix
+        matrice_np = matrix
+
 
     #Am aflat V0 cu formula initiala
-    matrice_np = np.matrix(matrice)
-    transpusa = matrice_np.transpose()
+    #matrice_np = np.matrix(matrice)
+    transpusa = np.transpose(matrice_np)
 
     #Calculam normele
     try:
@@ -163,14 +174,13 @@ def schultz(numar_linii_coloane,genereaza,matrix):
 
         matrice_v0 = cp.copy(matrice_v1)
 
-        matrice_a = np.multiply(matrice_np,matrice_v0)
-        matrice_a -= (2*np.linalg.det(matrice_np))
-        matrice_v1  = np.multiply(matrice_v0,matrice_a)
+        matrice_a = np.matmul(matrice_np,matrice_v0)
+        matrice_a += -(2*np.linalg.det(matrice_np))
+        matrice_v1  = np.matmul(matrice_v0,matrice_a)
+
 
         diferenta_v0_v1 = np.subtract(matrice_v0,matrice_v1)
-
         norma_v0_v1 = np.linalg.norm(diferenta_v0_v1)
-        k += 1
         if norma_v0_v1 < _EPSILON or norma_v0_v1 > limita_putere:
             break
         
@@ -179,11 +189,19 @@ def schultz(numar_linii_coloane,genereaza,matrix):
         matrice_inm = np.multiply(matrice_np,matrice_v1)
         det = np.linalg.det(matrice_np)
         matrice_inm -= det
-        norma = np.linalg.norm(matrice_np,ord=1)
+        norma = np.linalg.norm(matrice_inm,ord=1)
         print("Norma: "+str(norma))
+        print("Matrice initiala :")
+        print(matrice_np)
+        print("Matrice inversa : ")
+        print(matrice_v1)
     else:
         print("Numarul de iteratii : {0}".format(k))
         print("Maatricea este divergenta")
+        print("Matrice initiala :")
+        print(matrice_np)
+        print("Matrice inversa : ")
+        print(matrice_v1)
 
 
 def create_example_matrix(numar_linii_coloane):
@@ -206,13 +224,17 @@ def create_example_matrix(numar_linii_coloane):
 
 if __name__ == "__main__":
     
-    matrice = []
-    for x in range(4):
-        lista = [x+1 if x%2==0 else x+10 for x in range(4)]
+    #matrice = []
+    #for x in range(4):
+        #lista = [x+1 if x%2==0 else x+10 for x in range(4)]
         #lista = [0 for x in range(4)]
-        matrice.append(lista)
-    matrice2 = np.matrix(matrice)
+        #matrice.append(lista)
+    #matrice2 = np.matrix(matrice)
+
+    forma = 4
+    matrice = create_example_matrix(forma)
+    matrice2 = np.ndarray(shape=(forma,forma), dtype=float)
 
     schultz(10,False,matrice2)
-    li_2(10,False,matrice2)
-    li_1(10,False,matrice2)
+    #li_2(10,False,matrice2)
+    #li_1(10,False,matrice2)
